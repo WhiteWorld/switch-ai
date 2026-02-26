@@ -31,9 +31,9 @@ _detect_yq() {
 _list_profiles() {
   local yq_type=$(_detect_yq)
   if [ "$yq_type" = "go" ]; then
-    yq 'keys | .[]' "$CONFIG_FILE" 2>/dev/null
+    yq 'keys | .[]' "$CONFIG_FILE" 2>/dev/null | grep -v '^[[:space:]]*$'
   elif [ "$yq_type" = "pip" ]; then
-    yq -r 'keys[]' "$CONFIG_FILE" 2>/dev/null
+    yq -r 'keys[]' "$CONFIG_FILE" 2>/dev/null | grep -v '^[[:space:]]*$'
   else
     echo "❌ yq not found. Install: brew install yq (Go) or pip install yq (Python)"
     return 1
@@ -165,7 +165,7 @@ switch_ai() {
   choices=$(printf "%s\n%s\n%s" "$choices" "🧹 clear" "📋 show")
 
   local selection
-  selection=$(echo "$choices" | fzf --prompt="Select AI Profile (or action): " --height=40%)
+  selection=$(echo "$choices" | fzf --prompt="Select AI Profile (or action): " --height=~40%)
 
   [ -z "$selection" ] && echo "Cancelled." && return 1
 
