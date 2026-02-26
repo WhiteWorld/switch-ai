@@ -1,0 +1,15 @@
+# ~/.config/ai-keys/profiles.yaml
+# AI API 配置文件，替换成你自己的 Key
+
+aigocode:
+  ANTHROPIC_BASE_URL: https://api.aigocode.com
+  ANTHROPIC_AUTH_TOKEN: <token> 
+
+ark:
+  ANTHROPIC_BASE_URL: https://ark.cn-beijing.volces.com/api/coding
+  ANTHROPIC_AUTH_TOKEN: <token> 
+  ANTHROPIC_MODEL: ark-code-latest
+
+sssaicode:
+  ANTHROPIC_BASE_URL: https://node-hk.sssaicode.com/api
+  ANTHROPIC_AUTH_TOKEN: <token> 
