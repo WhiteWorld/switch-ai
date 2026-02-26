@@ -139,17 +139,14 @@ switch_ai() {
         return 0
         ;;
       *)
-        clear_ai_env
-        _load_profile "$1"
-        local _any_key
-        _any_key="$(_get_var ANTHROPIC_API_KEY)$(_get_var OPENAI_API_KEY)$(_get_var OPENROUTER_API_KEY)"
-        if [ -n "$_any_key" ]; then
-          echo "✅ Switched to: $1"
-          show_ai_env
-        else
+        if ! _list_profiles | grep -qx "$1"; then
           echo "❌ Profile '$1' not found in $CONFIG_FILE"
           return 1
         fi
+        clear_ai_env
+        _load_profile "$1"
+        echo "✅ Switched to: $1"
+        show_ai_env
         return 0
         ;;
     esac
