@@ -106,7 +106,7 @@ show_ai_env() {
   for var in "${vars[@]}"; do
     val=$(_get_var "$var")
     if [ -n "$val" ]; then
-      if [[ "$var" == *"KEY"* ]]; then
+      if [[ "$var" == *"KEY"* || "$var" == *"TOKEN"* || "$var" == *"SECRET"* || "$var" == *"PASSWORD"* ]]; then
         echo "  $var=${val:0:8}...********"
       else
         echo "  $var=$val"
