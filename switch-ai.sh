@@ -127,6 +127,12 @@ switch_ai() {
     return 1
   fi
 
+  # 检查 yq 依赖
+  if ! command -v yq >/dev/null 2>&1; then
+    echo "❌ yq not found. Install: brew install yq  (or: pip install yq)"
+    return 1
+  fi
+
   # 如果传了参数，直接走非交互模式
   if [ -n "$1" ]; then
     case "$1" in
@@ -152,7 +158,12 @@ switch_ai() {
     esac
   fi
 
-  # 无参数 → 交互选择
+  # 无参数 → 交互选择，检查 fzf
+  if ! command -v fzf >/dev/null 2>&1; then
+    echo "❌ fzf not found. Install: brew install fzf"
+    return 1
+  fi
+
   local choices
   choices=$(_list_profiles)
   if [ $? -ne 0 ]; then
