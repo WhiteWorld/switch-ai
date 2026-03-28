@@ -1,5 +1,5 @@
 # ~/.config/ai-keys/profiles.yaml
-# AI API 配置文件，替换成你自己的 Key
+# AI API config file — replace with your own keys
 
 aigocode:
   ANTHROPIC_BASE_URL: https://api.aigocode.com

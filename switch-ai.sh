@@ -1,20 +1,20 @@
 #!/usr/bin/env bash
-# switch-ai.sh — AI API Key 交互式切换工具 (YAML 版，Bash/Zsh 双兼容)
+# switch-ai.sh — Interactive AI API Key switcher (YAML-based, Bash/Zsh compatible)
 #
-# 用法:
-#   source ~/.local/lib/switch-ai.sh   ← 只加载函数，不执行
-#   switch_ai                          ← 交互选择
-#   switch_ai sssaicode                ← 直接切换
-#   clear_ai_env                       ← 清除变量
-#   show_ai_env                        ← 查看当前变量
+# Usage:
+#   source ~/.local/lib/switch-ai.sh   ← load functions only, no execution
+#   switch_ai                          ← interactive selection
+#   switch_ai sssaicode                ← switch directly to a profile
+#   clear_ai_env                       ← clear environment variables
+#   show_ai_env                        ← show current variables
 #
-# 依赖:
-#   - yq: 支持 mikefarah/yq (Go) 或 pip yq (Python) 两种
-#   - fzf / gum / skim 任选一个用于交互选择
+# Dependencies:
+#   - yq: supports mikefarah/yq (Go) or pip yq (Python)
+#   - fzf / gum / skim (any one) for interactive selection
 
 CONFIG_FILE="$HOME/.config/ai-keys/profiles.yaml"
 
-# ---- 检测 yq 版本（Go 版 vs pip 版语法不同）----
+# ---- Detect yq version (Go vs pip have different syntax) ----
 _detect_yq() {
   if command -v yq >/dev/null 2>&1; then
     if yq --version 2>&1 | grep -qi "mikefarah\|https://github.com/mikefarah"; then
@@ -27,7 +27,7 @@ _detect_yq() {
   fi
 }
 
-# ---- 从 YAML 提取所有 profile 名称 ----
+# ---- Extract all profile names from YAML ----
 _list_profiles() {
   local yq_type=$(_detect_yq)
   if [ "$yq_type" = "go" ]; then
@@ -40,7 +40,7 @@ _list_profiles() {
   fi
 }
 
-# ---- 从 YAML 动态提取所有变量名（去重）----
+# ---- Dynamically extract all variable names from YAML (deduplicated) ----
 _load_all_vars() {
   local yq_type=$(_detect_yq)
   if [ "$yq_type" = "go" ]; then
@@ -52,7 +52,7 @@ _load_all_vars() {
   fi
 }
 
-# ---- 加载指定 profile 的环境变量 ----
+# ---- Load environment variables for the specified profile ----
 _load_profile() {
   local profile="$1"
   local yq_type=$(_detect_yq)
@@ -75,7 +75,7 @@ _load_profile() {
   done <<< "$lines"
 }
 
-# ---- 兼容 Bash/Zsh 的间接变量引用 ----
+# ---- Bash/Zsh compatible indirect variable reference ----
 _get_var() {
   if [ -n "$ZSH_VERSION" ]; then
     echo "${(P)1}"
@@ -84,7 +84,7 @@ _get_var() {
   fi
 }
 
-# ---- 清除所有 AI 相关环境变量 ----
+# ---- Clear all AI-related environment variables ----
 clear_ai_env() {
   local var
   local vars
@@ -95,7 +95,7 @@ clear_ai_env() {
   echo "🧹 Cleared ${#vars[@]} variables: ${vars[*]}"
 }
 
-# ---- 显示当前生效的变量（Key 自动掩码）----
+# ---- Show current active variables (keys automatically masked) ----
 show_ai_env() {
   echo "📋 Current AI environment variables:"
   echo "---"
@@ -120,20 +120,20 @@ show_ai_env() {
   echo "---"
 }
 
-# ---- 主切换函数（交互 + 传参两用）----
+# ---- Main switch function (interactive and direct-argument modes) ----
 switch_ai() {
   if [ ! -f "$CONFIG_FILE" ]; then
     echo "❌ Config not found: $CONFIG_FILE"
     return 1
   fi
 
-  # 检查 yq 依赖
+  # Check yq dependency
   if ! command -v yq >/dev/null 2>&1; then
     echo "❌ yq not found. Install: brew install yq  (or: pip install yq)"
     return 1
   fi
 
-  # 如果传了参数，直接走非交互模式
+  # If an argument is provided, use non-interactive mode
   if [ -n "$1" ]; then
     case "$1" in
       "clear"|"--clear")
@@ -158,7 +158,7 @@ switch_ai() {
     esac
   fi
 
-  # 无参数 → 交互选择，检查 fzf
+  # No argument → interactive selection, check for fzf
   if ! command -v fzf >/dev/null 2>&1; then
     echo "❌ fzf not found. Install: brew install fzf"
     return 1
@@ -193,7 +193,7 @@ switch_ai() {
   esac
 }
 
-# ---- 只在直接执行时才自动运行，source 时只加载函数 ----
+# ---- Run automatically only when executed directly; source only loads functions ----
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]] 2>/dev/null; then
   switch_ai "$@"
 fi
